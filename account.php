@@ -39,6 +39,11 @@ if ( isset($_GET['deletejobid']) ) {
   $mysqli->query("DELETE FROM CASEM_Job WHERE id='$jobid';");
 }
 
+if ( isset($_GET['deleteAplicantId']) ) {
+  $deleteAplicantId = $_GET['deleteAplicantId'];
+  $mysqli->query("DELETE FROM CASEM_Aplicant WHERE id='$deleteAplicantId';");
+}
+
 $joburi = $mysqli->query("SELECT * FROM CASEM_Job;");
 $logat = isset($_SESSION['email'])
 ?>
@@ -223,6 +228,21 @@ $logat = isset($_SESSION['email'])
                   Cerințe: <?php echo $job['cerinte'];?> <br><br>
                   <a href="account.php?deletejobid=<?php echo $job['id'];?>" class="button border-radius background-error text-size-20 text-white">Sterge job</a><br><br>
                   Au aplicat deja <?php echo $job['aplicanti'];?> persoane pentru acest post.
+                  <table>
+                  <?php 
+                  $idJob = $job['id'];
+                  $aplicantiResult=$mysqli->query("SELECT * FROM CASEM_Aplicant WHERE idJob=$idJob;");
+                  while($aplicant = $aplicantiResult->fetch_assoc()) { 
+                    ?>
+                  <tr>
+                    <td><?php echo $aplicant['nume'];?></td>
+                    <td><?php echo $aplicant['prenume'];?></td>
+                    <td><a href="uploads/<?php echo $aplicant['cv'];?>">Download CV</a></td>
+                    <td><a href="uploads/<?php echo $aplicant['scrisoare'];?>">Download Scrisoare</a></td>
+                    <td><a href="account.php?deleteAplicantId=<?php echo $aplicant['id'];?>">Sterge Aplicant</a></td>
+                  </tr>
+                  <?php } ?>
+                  </table>
                 </div>
               <?php } ?>
 
